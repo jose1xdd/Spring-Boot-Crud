@@ -9,8 +9,6 @@ import org.springframework.stereotype.Service;
 import com.unab.registro.entitys.User;
 import com.unab.registro.repository.UserRepository;
 
-import jakarta.validation.Valid;
-
 
 @Service
 public class UserService {
@@ -26,13 +24,27 @@ public class UserService {
         return this.userRepository.findAll();
     }
     
-    public User updateEmail(String id, String email){
+    public User updateUser(String id, User user){
       Optional<User> userExist = this.userRepository.findById(id);
       if(userExist.isPresent()){
-        User actualUser = userExist.get();
-        actualUser.setEmail(email);
+        User actualUser = user;
+        actualUser.setId(userExist.get().getId());
         return this.userRepository.save(actualUser);
       }
       throw new RuntimeException("Usuario No encontrado");
+    }
+
+    public void deleteUser(String id ){
+      Optional<User> userExist = this.userRepository.findById(id);
+      if(userExist.isPresent()){
+        this.userRepository.delete(userExist.get());
+      
+      }
+      else{
+        throw new RuntimeException("Usuario No Encontrado");
+      }
+    }
+    public User fetchByEmail(String email){
+        return this.userRepository.findByEmail(email);
     }
 }
